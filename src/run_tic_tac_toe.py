@@ -8,7 +8,7 @@ p2 = Player("p2")
 # Trains p1 and p2 against each other 100,000 times. Policies dumped as "policy_p1" and "policy_p2"
 st = State(p1, p2)
 print("training...")
-st.play(100000)
+#st.play(100000)
 
 # Simulate game against player where bot goes first
 p1 = Player("computer", exp_rate=0)  # exp_rate set to 0 since bot is not learning here
