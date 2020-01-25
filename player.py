@@ -5,7 +5,8 @@ board_rows = 3
 board_cols = 3
 
 """
-Player agent 
+Player agent which chooses next move given board state and at the end of the game,
+re-updates states_values to be used for next round when training against another bot.
 """
 class Player:
     def __init__(self, name, exp_rate=0.3):
@@ -62,23 +63,34 @@ class Player:
     """
     def feed_reward(self, reward):
         for st in reversed(self.states):
-
             if self.states_value.get(st) is None:
                 self.states_value[st] = 0
             self.states_value[st] = self.lr * (self.decay_gamma * reward - self.states_value[st])
             reward = self.states_value[st]
 
+    """
+    Saves current state
+    """
     def add_state(self, state):
         self.states.append(state)
 
+    """
+    Reset player states for next round
+    """
     def reset(self):
         self.states = []
 
+    """
+    Dumps policy after training bots against each other
+    """
     def save_policy(self):
         fw = open('policy_' + str(self.name), 'wb')
         pickle.dump(self.states_value, fw)
         fw.close()
 
+    """
+    Loads policy to use against human player
+    """
     def load_policy(self, file):
         fr = open(file, 'rb')
         self.states_value = pickle.load(fr)

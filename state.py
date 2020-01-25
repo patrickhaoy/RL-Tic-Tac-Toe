@@ -7,8 +7,6 @@ board_cols = 3
 Tic Tac Toe board which updates states of either player as they take an action, judges end of game,
 and rewards players accordingly.
 """
-
-
 class State:
     def __init__(self, p1, p2):
         self.board = np.zeros((board_rows, board_cols))
@@ -137,8 +135,12 @@ class State:
         self.p1.save_policy()
         self.p2.save_policy()
 
+    """
+    Simulating play against a human.
+    """
     def play2(self):
         while not self.is_end:
+            # Simulating p1's turn
             pos = self.available_pos()
             p1_action = self.p1.choose_action(pos, self.board, self.player_symbol)
             self.update_state(p1_action)
@@ -153,6 +155,7 @@ class State:
                 break
 
             else:
+                # Simulating p2's turn
                 pos = self.available_pos()
                 p2_action = self.p2.choose_action(pos)
 
@@ -167,18 +170,27 @@ class State:
                     self.state_reset()
                     break
 
+    """
+    Resets state of board and is_end for next round
+    """
     def state_reset(self):
         self.board = np.zeros((board_rows, board_cols))
         self.board_hash = None
         self.is_end = False
         self.player_symbol = 1
 
+    """
+    Reset players and board for next round
+    """
     def total_reset(self):
         self.give_reward()
         self.p1.reset()
         self.p2.reset()
         self.state_reset()
 
+    """
+    Prints out board for human user
+    """
     def show_board(self):
         for i in range(0, board_rows):
             print("-------------")
