@@ -83,3 +83,40 @@ class State:
             self.p1.feed_reward(0.1)
             self.p2.feed_reward(0.5)
 
+    def play(self, rounds=100):
+        for i in range(rounds):
+            if i % 1000 == 0:
+                print("Round {}".format(i))
+            while not self.is_end:
+                # Player 1
+                pos = self.available_pos()
+                p1_action = self.p1.choose_action(pos, self.board, self.player_symbol)
+                self.update_state(p1_action)
+                board_hash = self.get_hash()
+                self.p1.add_state(board_hash)
+
+                if self.winner() is not None:
+                    self.total_reset()
+                    break
+                else:
+                    pos = self.available_pos()
+                    p2_action = self.p2.choose_action(pos, self.board, self.player_symbol)
+                    self.update_state(p2_action)
+                    board_hash = self.get_hash()
+                    self.p2.add_state(board_hash)
+
+                    if self.winner() is not None:
+                        self.total_reset()
+                        break
+
+    def state_reset(self):
+        self.board = np.zeros((board_rows, board_cols))
+        self.board_hash = None
+        self.is_end = False
+        self.player_symbol = 1
+
+    def total_reset(self):
+        self.give_reward()
+        self.p1.reset()
+        self.p2.reset()
+        self.state_reset()
